@@ -1,16 +1,26 @@
-#include "vm/include/opcodes.h"
-#include "vm/include/vm.h"
-#include <cstdlib>
+#include "compiler/include/lexer.h"
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 
 int main(int argc, char **argv) {
-    Chunk *chunk = (Chunk*)malloc(sizeof(Chunk));
-    VM vm = VM(chunk);
+    if (argc != 2) {
+        std::cerr << "\033[31mUsage: psharpc path/to/src\033[0m";
+        return 1;
+    }
+    std::ifstream file(argv[1]);
+    if (!file.is_open()) {
+        std::cerr << "\033[31mError openning file: does not exist!\033[0m";
+        return 1;
+    }
+    auto file_name = std::filesystem::absolute(argv[1]).string();
+    std::ostringstream content;
+    content << file.rdbuf();
+    Lexer lex(content.str(), file_name);
+    file.close();
 
-    vm.add_const(chunk, {.ival = 2});
-    vm.add_const(chunk, {.ival = 3});
-    vm.push_byte(chunk, OP_IADD);
-    vm.push_byte(chunk, OP_PRINTI);
-    
-    vm.push_byte(chunk, OP_HALT);
-    vm.execute();
+    std::vector<Token> tokens(lex.tokenize());
+    for (auto& tok : tokens) {
+        std::cout << tok.to_str() << '\n';
+    }
 }
