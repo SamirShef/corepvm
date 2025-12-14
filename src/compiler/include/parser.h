@@ -10,7 +10,7 @@ class Parser {
     uint32_t pos;
 
 public:
-    Parser(std::string_view fn, std::vector<Token> t) : file_name(fn), tokens(t), pos(0) {}
+    Parser(std::string_view fn, std::vector<Token> t) : file_name(fn), tokens(std::move(t)), pos(0) {}
 
     std::vector<ASTNodePtr> parse();
 

@@ -1,6 +1,8 @@
 #include "compiler/include/ast.h"
+#include "compiler/include/codegen.h"
 #include "compiler/include/lexer.h"
 #include "compiler/include/parser.h"
+#include "vm/include/vm.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -22,10 +24,12 @@ int main(int argc, char **argv) {
     file.close();
 
     std::vector<Token> tokens(lex.tokenize());
-    for (auto& tok : tokens) {
-        std::cout << tok.to_str() << '\n';
-    }
     
     Parser parser(file_name, tokens);
     std::vector<ASTNodePtr> stmts(parser.parse());
+
+    CodeGen codegen(file_name, stmts);
+    VM vm(codegen.generate());
+    //vm.print_disassembly();
+    vm.execute();
 }

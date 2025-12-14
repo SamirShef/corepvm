@@ -66,8 +66,8 @@ struct Value {
     };
     std::string str;
     
-    Value(bool v)               : type(TYPE_BOOL, "bool", false),   b(v) {}
-    Value(char8_t v)            : type(TYPE_CHAR, "char", false),   c(v) {}
+    Value(bool v)               : type(TYPE_BOOL, "bool", false),  b(v) {}
+    Value(char8_t v)            : type(TYPE_CHAR, "char", false),  c(v) {}
     Value(int16_t v)            : type(TYPE_SHORT, "i16", false),  s(v) {}
     Value(int32_t v)            : type(TYPE_INT, "i32", false),    i(v) {}
     Value(int64_t v)            : type(TYPE_LONG, "i64", false),   l(v) {}
@@ -91,17 +91,26 @@ struct ASTNode {
         }
         return nullptr;
     }
+
+    template<typename T>
+    const T *as() const {
+        if (T::get_type() == type) {
+            return static_cast<const T*>(this);
+        }
+        return nullptr;
+    }
 };
 
 using ASTNodePtr = std::shared_ptr<ASTNode>;
 
 struct VDSNode : ASTNode {
     std::string name;
+    Type type;
     ASTNodePtr expr;
 
     static NodeType get_type() { return NODE_VDS; }
 
-    VDSNode(std::string n, ASTNodePtr e, LOC) : name(n), expr(e), AST {}
+    VDSNode(Type t, std::string n, ASTNodePtr e, LOC) : type(t), name(n), expr(e), AST {}
     ~VDSNode() override = default;
 };
 
@@ -143,3 +152,6 @@ struct VENode : ASTNode {
     VENode(std::string n, LOC) : name(n), AST {}
     ~VENode() override = default;
 };
+
+#undef AST
+#undef LOC

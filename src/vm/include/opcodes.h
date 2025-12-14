@@ -14,9 +14,15 @@ enum OpCodes : uint8_t {
     OP_FDIV,
     OP_IREM,
     OP_FREM,
+    OP_UIMINUS,
+    OP_UFMINUS,
+    OP_UNOT,
     OP_PRINTI,
     OP_PRINTF,
     OP_PRINTO,
+    OP_DEFGLOB,
+    OP_LDGLOB,
+    OP_STGLOB,
     OP_RET,
     OP_CALL
 };
