@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(psharpc)
+project(psharp)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
@@ -9,4 +9,4 @@ else()
     add_compile_options(-w)
 endif()
 
-add_executable(psharpc ${SOURCES})
+add_executable(psharp ${SOURCES})

@@ -7,7 +7,7 @@
 
 int main(int argc, char **argv) {
     if (argc != 2) {
-        std::cerr << "\033[31mUsage: psharpc path/to/src\033[0m\n";
+        std::cerr << "\033[31mUsage: psharp path/to/src\033[0m\n";
         return 1;
     }
     std::ifstream file(argv[1]);
