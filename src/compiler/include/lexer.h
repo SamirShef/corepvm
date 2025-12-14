@@ -12,7 +12,7 @@ class Lexer {
     static std::unordered_map<std::string_view, TokenType> spec_symbols;
 
 public:
-    Lexer(const std::string_view s, const std::string_view fn) : src(s), file_name(fn), pos(0), loc({1, 1}) {}
+    Lexer(const std::string_view s, const std::string_view fn) : src(s), file_name(fn), pos(0), loc(1, 1) {}
 
     std::vector<Token> tokenize();
 
