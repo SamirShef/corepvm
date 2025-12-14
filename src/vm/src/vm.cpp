@@ -1,7 +1,8 @@
 #include "../include/opcodes.h"
 #include "../include/vm.h"
-#include <cmath>
+#include <iomanip>
 #include <iostream>
+#include <cmath>
 
 void VM::push_byte(Chunk *chunk, uint8_t byte) {
     chunk->code.push_back(byte);
@@ -34,6 +35,12 @@ uint32_t VM::add_const(Chunk *chunk, StackSlot slot) {
     push_byte(chunk, minor1);
     push_byte(chunk, minor2);
     return index;
+}
+
+void VM::print_disassembly() const {
+    for (auto& code : chunk->code) {
+        std::cout << std::setfill('0') << std::setw(4) << (uint16_t)code << '\n';
+    }
 }
 
 void VM::execute() {
@@ -108,6 +115,21 @@ void VM::execute() {
                 push_val({.fval = std::fmod(a, b)});
                 break;
             }
+            case OP_UIMINUS: {
+                int64_t val = pop_val().ival;
+                push_val({.ival = -val});
+                break;
+            }
+            case OP_UFMINUS: {
+                double val = pop_val().fval;
+                push_val({.fval = -val});
+                break;
+            }
+            case OP_UNOT: {
+                int64_t val = pop_val().ival;
+                push_val({.ival = !val});
+                break;
+            }
             case OP_PRINTI:
                 std::cout << pop_val().ival << '\n';
                 break;
@@ -117,6 +139,27 @@ void VM::execute() {
             case OP_PRINTO:
                 std::cout << pop_val().objval << '\n';
                 break;
+            case OP_DEFGLOB: {
+                global_vars.push_back({});
+                break;
+            }
+            case OP_LDGLOB: {
+                uint8_t minor2 = pop_byte(chunk);
+                uint8_t minor1 = pop_byte(chunk);
+                uint8_t major = pop_byte(chunk);
+                uint32_t index = (major) | (minor1 << 8) | (minor2 << 16);
+                push_val(global_vars[index]);
+                break;
+            }
+            case OP_STGLOB: {
+                StackSlot val = pop_val();
+                uint8_t minor1 = pop_byte(chunk);
+                uint8_t minor2 = pop_byte(chunk);
+                uint8_t major = pop_byte(chunk);
+                uint32_t index = (major) | (minor1 << 8) | (minor2 << 16);
+                global_vars[index] = val;
+                break;
+            }
         }
     }
 }

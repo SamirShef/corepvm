@@ -27,7 +27,7 @@ ASTNodePtr Parser::parse_vds_stmt() {
         expr = parse_expr();
     }
     consume_semicolon();
-    return std::make_shared<VDSNode>(name, expr, pos);
+    return std::make_shared<VDSNode>(type, name, expr, pos);
 }
 
 ASTNodePtr Parser::parse_expr() {

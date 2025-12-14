@@ -18,13 +18,18 @@ struct VM {
     std::stack<StackSlot> stack;
     Chunk *chunk;
     uint8_t *ip;
+    std::vector<StackSlot> global_vars;
 
-    VM(Chunk *c) : chunk(c) {}
+    VM(Chunk *c) : chunk(c), ip(c->code.data()) {}
+    ~VM() {
+        delete chunk;
+    }
 
     void push_byte(Chunk *chunk, uint8_t byte);
     uint8_t pop_byte(Chunk *chunk);
     void push_val(StackSlot slot);
     StackSlot pop_val();
     uint32_t add_const(Chunk *chunk, StackSlot slot);
+    void print_disassembly() const;
     void execute();
 };
