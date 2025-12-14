@@ -1,16 +1,18 @@
+#include "compiler/include/ast.h"
 #include "compiler/include/lexer.h"
+#include "compiler/include/parser.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 
 int main(int argc, char **argv) {
     if (argc != 2) {
-        std::cerr << "\033[31mUsage: psharpc path/to/src\033[0m";
+        std::cerr << "\033[31mUsage: psharpc path/to/src\033[0m\n";
         return 1;
     }
     std::ifstream file(argv[1]);
     if (!file.is_open()) {
-        std::cerr << "\033[31mError openning file: does not exist!\033[0m";
+        std::cerr << "\033[31mError openning file: does not exist!\033[0m\n";
         return 1;
     }
     auto file_name = std::filesystem::absolute(argv[1]).string();
@@ -23,4 +25,7 @@ int main(int argc, char **argv) {
     for (auto& tok : tokens) {
         std::cout << tok.to_str() << '\n';
     }
+    
+    Parser parser(file_name, tokens);
+    std::vector<ASTNodePtr> stmts(parser.parse());
 }
